@@ -1,9 +1,9 @@
 {
-  "id": "example",
-  "label": "Example Module",
-  "version": "0.1.21",
-  "tablePrefix": "example_",
-  "mountPath": "/example",
+  "id": "lab",
+  "label": "Lab",
+  "version": "0.1.2",
+  "tablePrefix": "lab_",
+  "mountPath": "/lab",
   "backendEntry": "backend/index.js",
   "frontendEntry": "frontend/index.js"
 }
