@@ -12,7 +12,8 @@ const saveButtonStyle = { padding: '5px 10px', color: 'white', border: 'none', b
 const savedChipStyle = { display: 'inline-block', padding: '2px 6px', margin: '0 0 0 10px', borderRadius: '3px', fontSize: '11px', color: 'white', backgroundColor: '#28a745' };
 
 function PageAccessTab({ coreApi }) {
-  const { api, useAuth, useRoles } = coreApi;
+  const { api, useAuth, useRoles, useSortedRows } = coreApi;
+  const { SortHeader } = coreApi.ui;
   const { userData } = useAuth();
   const { canManageUsers } = useRoles(userData);
   const [pages, setPages] = useState([]);
@@ -22,6 +23,14 @@ function PageAccessTab({ coreApi }) {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // One sortable column per role as well as the page name: a role column sorts
+  // by whether that role's box is ticked.
+  const columns = { page: (page) => page.label };
+  for (const role of roles) {
+    columns[`role:${role}`] = { value: (page) => ((access[page.key] || []).includes(role) ? 1 : 0), type: 'number' };
+  }
+  const table = useSortedRows(pages, columns, { rememberAs: 'lab.pageAccess.table' });
 
   useEffect(() => {
     api.get('/lab/page-access')
@@ -57,9 +66,14 @@ function PageAccessTab({ coreApi }) {
       {!canManageUsers && <p style={hintStyle}>Read-only - only staff-level users in this module can change page access.</p>}
       <div style={wrapperStyle}>
         <table style={tableStyle}>
-          <thead style={theadStyle}><tr><th style={thStyle}>Page</th>{roles.map(role => <th key={role} style={thStyle}>{role}</th>)}</tr></thead>
+          <thead style={theadStyle}>
+            <tr>
+              <SortHeader table={table} column="page" label="Page" style={thStyle}>Page</SortHeader>
+              {roles.map(role => <SortHeader key={role} table={table} column={`role:${role}`} label={role} style={thStyle}>{role}</SortHeader>)}
+            </tr>
+          </thead>
           <tbody>
-            {pages.map(page => (
+            {table.rows.map(page => (
               <tr key={page.key}>
                 <td style={tdStyle}>{page.label}</td>
                 {roles.map(role => (
