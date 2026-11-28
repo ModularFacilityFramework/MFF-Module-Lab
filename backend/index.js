@@ -3,12 +3,13 @@
 // for the full coreApi contract. This file is the ONLY place this module talks to core.
 const express = require('express');
 const manifest = require('../module.manifest.json');
-const modulePool = require('./config/database');
+const createModulePool = require('./config/database');
 const buildExampleRouter = require('./routes/exampleRoutes');
 const buildPageAccessRouter = require('./routes/pageAccessRoutes');
 
 module.exports = function register(coreApi) {
-  const moduleApi = { ...coreApi, pool: modulePool };
+  // coreApi.pool is core's own database - this module's routes use its own pool.
+  const moduleApi = { ...coreApi, pool: createModulePool(coreApi.getModuleConfig()) };
   const router = express.Router();
   router.use(buildExampleRouter(moduleApi));
   router.use(buildPageAccessRouter(moduleApi));

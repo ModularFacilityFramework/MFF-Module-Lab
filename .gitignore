@@ -1,6 +1,6 @@
 node_modules/
-# Written by mff-core's install/update flow at this module's own root - real
-# database credentials for a real installed clone.
+# Modules have no .env of their own. Kept ignored so that one left over in an
+# older installed clone, with real credentials in it, can never be committed.
 /.env
 *.log
 npm-debug.log*

@@ -1,7 +1,7 @@
 {
   "id": "lab",
   "label": "Lab",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "tablePrefix": "lab_",
   "mountPath": "/lab",
   "backendEntry": "backend/index.js",
